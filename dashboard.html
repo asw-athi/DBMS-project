@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMC Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Asset Management Co.</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white" href="{{ url_for('login') }}">Login</a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success text-white" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1 class="display-4">Welcome to Asset Management Dashboard</h1>
+                <p class="lead">Manage your investments, track portfolios, and view the latest announcements!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Investment Schemes -->
+            <div class="col-md-12">
+                <div class="card text-center">
+                    <div class="card-header bg-success text-white">
+                        Investment Schemes
+                    </div>
+                    <div class="card-body">
+                        <p>View available investment schemes and start investing.</p>
+                        <a href="{{ url_for('get_schemes') }}" class="btn btn-success">View Schemes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schemes Section -->
+        {% if schemes %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h2>Available Investment Schemes</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Scheme ID</th>
+                            <th>Scheme Name</th>
+                            <th>Scheme Type</th>
+                            <th>Launch Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scheme in schemes %}
+                        <tr>
+                            <td>{{ scheme[0] }}</td>
+                            <td>{{ scheme[1] }}</td>
+                            <td>{{ scheme[2] }}</td>
+                            <td>{{ scheme[3] }}</td>
+                            <td>
+                                <!-- Subscription Button -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscribeModal" data-scheme-id="{{ scheme[0] }}" data-scheme-name="{{ scheme[1] }}">
+                                    Subscribe
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Subscription Modal -->
+    <div class="modal fade" id="subscribeModal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subscribeModalLabel">Subscribe to Scheme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/subscribe" method="POST" id="subscribeForm">
+                        <input type="hidden" name="scheme_id" id="schemeId">
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Your Email</label>
+                            <input type="email" class="form-control" id="customerEmail" name="customer_email" required>
+                        </div>
+                        <p id="schemeNameDisplay"></p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="subscribeForm" class="btn btn-primary">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcements and Feedback -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-header bg-warning text-dark">
+                        Announcements
+                    </div>
+                    <div class="card-body">
+                        <p>View latest announcements from the administrators.</p>
+                        <a href="{{ url_for('announcements') }}" class="btn btn-danger">View Announcements</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-header bg-danger text-white">
+                        Feedback
+                    </div>
+                    <div class="card-body">
+                        <p>Submit feedback or queries regarding your investments or the platform.</p>
+                        <a href="{{ url_for('feedback') }}" class="btn btn-danger">Submit Feedback</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 py-3 bg-dark">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2024 Asset Management Co.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Populate the modal with the selected scheme's information
+        const subscribeModal = document.getElementById('subscribeModal');
+        subscribeModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const schemeId = button.getAttribute('data-scheme-id');
+            const schemeName = button.getAttribute('data-scheme-name');
+            
+            const schemeIdInput = subscribeModal.querySelector('#schemeId');
+            const schemeNameDisplay = subscribeModal.querySelector('#schemeNameDisplay');
+            schemeIdInput.value = schemeId;
+            schemeNameDisplay.textContent = 'You are subscribing to: ' + schemeName;
+        });
+    </script>
+</body>
+</html>

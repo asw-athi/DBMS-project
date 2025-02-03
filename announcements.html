@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            font-family: 'Roboto', sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #007bff, #00c853);
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+        .nav-link:hover {
+            color: #cce5ff !important;
+        }
+        h1 {
+            font-weight: bold;
+            margin-top: 30px;
+            color: #343a40;
+        }
+        .announcement-card {
+            background: white;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .announcement-date {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .announcement-message {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .footer {
+            background: linear-gradient(90deg, #007bff, #00c853);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .announcement-card {
+                margin: 0 auto;
+                max-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Asset Management System</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Customer Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Announcements</h1>
+
+        <!-- Announcement Submission Form -->
+        <form action="{{ url_for('announcements') }}" method="POST" class="mt-4">
+            <div class="mb-3">
+                <label for="announcementMessage" class="form-label">New Announcement</label>
+                <textarea class="form-control" id="announcementMessage" name="announcementMessage" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Announcement</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              <div class="mt-4">
+                  {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}">{{ message }}</div>
+                  {% endfor %}
+              </div>
+          {% endif %}
+        {% endwith %}
+
+        <hr class="my-5">
+
+        <h2 class="text-center">Previous Announcements</h2>
+
+        <!-- Announcements List -->
+        <div id="announcements-list" class="mt-4">
+            {% if announcements %}
+                {% for announcement in announcements %}
+                    <div class="card mt-3 announcement-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Announcement ID: {{ announcement.announcement_id }}</h5>
+                            <p class="announcement-message">{{ announcement.announcement_message }}</p>
+                            <p class="announcement-date">Date: {{ announcement.announcement_date }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">No announcements available at the moment.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 Asset Management System. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

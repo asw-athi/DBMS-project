@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Asset Management Co.</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1>Welcome, {{ customer['customer_name'] }}!</h1>
+        <p>Email: {{ customer['email'] }}</p>
+        <p>Phone: {{ customer['phone_number'] }}</p>
+
+        <h2>Your Transactions</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Customer ID</th>
+                    <th>Transaction Date</th>
+                    <th>Amount</th>
+                    <th>Transaction Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction['transaction_id'] }}</td>
+                    <td>{{ transaction['customer_id'] }}</td>
+                    <td>{{ transaction['transaction_date']}}</td>
+                    <td>{{ transaction['amount'] }}</td>
+                    <td>{{ transaction['transaction_type'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Your Schemes</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Scheme ID</th>
+                    <th>Scheme Name</th>
+                    <th>Scheme Type</th>
+                    <th>Customer ID</th>
+                    <th>Subscription Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scheme in customer_scheme %}
+                <tr>
+                    <td>{{ scheme['scheme_id'] }}</td>
+                    <td>{{ scheme['scheme_name']}}</td>
+                    <td>{{ scheme['scheme_type']}}</td>
+                    <td>{{ scheme['customer_id'] }}</td>
+                    <td>{{ scheme['subscription_date']}}</td>
+                    <td>{{ scheme['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Funds</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fund ID</th>
+                    <th>Fund Name</th>
+                    <th>Fund Manager</th>
+                    <th>Fund Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fund in funds %}
+                <tr>
+                    <td>{{ fund['fund_id'] }}</td>
+                    <td>{{ fund['fund_name'] }}</td>
+                    <td>{{ fund['fund_manager']}}</td>
+                    <td>{{ fund['fund_type'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="footer mt-5 py-3 bg-dark">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2024 Asset Management Co.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
